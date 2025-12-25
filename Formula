@@ -1,0 +1,34 @@
+class Raps < Formula
+  desc "RAPS - Rust APS CLI"
+  homepage "https://dmytro-yemelianov.github.io/raps/"
+  version "2.0.0"
+  license "Apache-2.0"
+
+  on_macos do
+    if Hardware::CPU.intel?
+      url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-macos-x64.tar.gz"
+      # sha256 "..." (to be updated by CI)
+    else
+      url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-macos-arm64.tar.gz"
+      # sha256 "..." (to be updated by CI)
+    end
+  end
+
+  on_linux do
+    if Hardware::CPU.intel?
+      url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-linux-x64.tar.gz"
+      # sha256 "..." (to be updated by CI)
+    else
+      url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-linux-arm64.tar.gz"
+      # sha256 "..." (to be updated by CI)
+    end
+  end
+
+  def install
+    bin.install "raps"
+  end
+
+  test do
+    system "#{bin}/raps --version"
+  end
+end
