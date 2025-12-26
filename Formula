@@ -1,6 +1,6 @@
 class Raps < Formula
-  desc "RAPS - Rust APS CLI"
-  homepage "https://dmytro-yemelianov.github.io/raps/"
+  desc "🌼 RAPS (rapeseed) — Rust Autodesk Platform Services CLI"
+  homepage "https://rapscli.xyz"
   version "2.0.0"
   license "Apache-2.0"
 
