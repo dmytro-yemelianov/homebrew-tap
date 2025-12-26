@@ -1,0 +1,110 @@
+name: Update Formula
+
+on:
+  repository_dispatch:
+    types: [raps-release]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to update to (e.g., 2.0.0)'
+        required: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            VERSION="${{ github.event.client_payload.version }}"
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+          # Remove 'v' prefix if present
+          VERSION="${VERSION#v}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "🌼 Updating to RAPS v$VERSION"
+
+      - name: Download checksums
+        id: checksums
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          BASE_URL="https://github.com/dmytro-yemelianov/raps/releases/download/v${VERSION}"
+          
+          # Download and extract checksums
+          curl -fsSL "${BASE_URL}/raps-macos-x64.tar.gz" -o macos-x64.tar.gz
+          curl -fsSL "${BASE_URL}/raps-macos-arm64.tar.gz" -o macos-arm64.tar.gz
+          curl -fsSL "${BASE_URL}/raps-linux-x64.tar.gz" -o linux-x64.tar.gz
+          curl -fsSL "${BASE_URL}/raps-linux-arm64.tar.gz" -o linux-arm64.tar.gz
+          
+          echo "macos_x64=$(sha256sum macos-x64.tar.gz | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+          echo "macos_arm64=$(sha256sum macos-arm64.tar.gz | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+          echo "linux_x64=$(sha256sum linux-x64.tar.gz | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+          echo "linux_arm64=$(sha256sum linux-arm64.tar.gz | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+
+      - name: Update formula
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          
+          cat > Formula/raps.rb << 'EOF'
+          class Raps < Formula
+            desc "🌼 RAPS (rapeseed) — Rust Autodesk Platform Services CLI"
+            homepage "https://rapscli.xyz"
+            version "${{ steps.version.outputs.version }}"
+            license "Apache-2.0"
+
+            on_macos do
+              if Hardware::CPU.intel?
+                url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-macos-x64.tar.gz"
+                sha256 "${{ steps.checksums.outputs.macos_x64 }}"
+              else
+                url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-macos-arm64.tar.gz"
+                sha256 "${{ steps.checksums.outputs.macos_arm64 }}"
+              end
+            end
+
+            on_linux do
+              if Hardware::CPU.intel?
+                url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-linux-x64.tar.gz"
+                sha256 "${{ steps.checksums.outputs.linux_x64 }}"
+              else
+                url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-linux-arm64.tar.gz"
+                sha256 "${{ steps.checksums.outputs.linux_arm64 }}"
+              end
+            end
+
+            def install
+              bin.install "raps"
+            end
+
+            test do
+              system "#{bin}/raps --version"
+            end
+          end
+          EOF
+
+      - name: Commit and push
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/raps.rb
+          git commit -m "Update to v${VERSION}"
+          git push
+
+      - name: Summary
+        run: |
+          echo "## 🌼 Homebrew Formula Updated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version:** ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **macOS x64:** \`${{ steps.checksums.outputs.macos_x64 }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **macOS arm64:** \`${{ steps.checksums.outputs.macos_arm64 }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Linux x64:** \`${{ steps.checksums.outputs.linux_x64 }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Linux arm64:** \`${{ steps.checksums.outputs.linux_arm64 }}\`" >> $GITHUB_STEP_SUMMARY
+
