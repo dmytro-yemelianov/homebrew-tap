@@ -1,7 +1,7 @@
 class Raps < Formula
   desc "🌼 RAPS (rapeseed) — Rust Autodesk Platform Services CLI"
   homepage "https://rapscli.xyz"
-  version "3.1.0"
+  version "3.3.0"
   license "Apache-2.0"
 
   on_macos do
