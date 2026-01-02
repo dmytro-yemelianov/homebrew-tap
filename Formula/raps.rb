@@ -7,20 +7,20 @@ class Raps < Formula
   on_macos do
     if Hardware::CPU.intel?
       url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-macos-x64.tar.gz"
-      sha256 "2de8168ba0e92d8147afb47afde2c0d1fd7f89cfb004565791e9ce40f2fcc60a"
+      sha256 "d2cac32f47dccb3d593d94b0e9ed8a07eac206141797048d7d2afd11229c7f99"
     else
       url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-macos-arm64.tar.gz"
-      sha256 "954f7ecd4da658d939c3e31da7a21f442d59a5915bf17515b6c432a6d0028b4a"
+      sha256 "775c196b32fe320e3added4c3bda0f9564779fe0530e7903aff464d33e8675cc"
     end
   end
 
   on_linux do
     if Hardware::CPU.intel?
       url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-linux-x64.tar.gz"
-      sha256 "f8418e77d13150b0a3cc9a7273fc467d3a221d1e419d8dbfe604505377b8239c"
+      sha256 "d9f3a1c47ee3505b495812a6ce6836e97cc2633d2490223efb5ab7f57f3810fb"
     else
       url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-linux-arm64.tar.gz"
-      sha256 "8b072c58077086a03533b091f4b3102517253db597d998fc1ee80358d110e941"
+      sha256 "21207eeacaf2e73ed0e7199193546160b0b9d1b4c00215d469bcdf40c6fe39f4"
     end
   end
 
