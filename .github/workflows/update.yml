@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    
+
     steps:
       - uses: actions/checkout@v4
 
@@ -36,22 +36,22 @@ jobs:
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           BASE_URL="https://github.com/dmytro-yemelianov/raps/releases/download/v${VERSION}"
-          
-          # Download and extract checksums
-          curl -fsSL "${BASE_URL}/raps-macos-x64.tar.gz" -o macos-x64.tar.gz
-          curl -fsSL "${BASE_URL}/raps-macos-arm64.tar.gz" -o macos-arm64.tar.gz
-          curl -fsSL "${BASE_URL}/raps-linux-x64.tar.gz" -o linux-x64.tar.gz
-          curl -fsSL "${BASE_URL}/raps-linux-arm64.tar.gz" -o linux-arm64.tar.gz
-          
-          echo "macos_x64=$(sha256sum macos-x64.tar.gz | cut -d' ' -f1)" >> $GITHUB_OUTPUT
-          echo "macos_arm64=$(sha256sum macos-arm64.tar.gz | cut -d' ' -f1)" >> $GITHUB_OUTPUT
-          echo "linux_x64=$(sha256sum linux-x64.tar.gz | cut -d' ' -f1)" >> $GITHUB_OUTPUT
-          echo "linux_arm64=$(sha256sum linux-arm64.tar.gz | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+
+          # Download cargo-dist assets (tar.xz format)
+          curl -fsSL "${BASE_URL}/raps-cli-x86_64-apple-darwin.tar.xz" -o macos-x64.tar.xz
+          curl -fsSL "${BASE_URL}/raps-cli-aarch64-apple-darwin.tar.xz" -o macos-arm64.tar.xz
+          curl -fsSL "${BASE_URL}/raps-cli-x86_64-unknown-linux-gnu.tar.xz" -o linux-x64.tar.xz
+          curl -fsSL "${BASE_URL}/raps-cli-aarch64-unknown-linux-gnu.tar.xz" -o linux-arm64.tar.xz
+
+          echo "macos_x64=$(sha256sum macos-x64.tar.xz | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+          echo "macos_arm64=$(sha256sum macos-arm64.tar.xz | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+          echo "linux_x64=$(sha256sum linux-x64.tar.xz | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+          echo "linux_arm64=$(sha256sum linux-arm64.tar.xz | cut -d' ' -f1)" >> $GITHUB_OUTPUT
 
       - name: Update formula
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          
+
           cat > Formula/raps.rb << 'EOF'
           class Raps < Formula
             desc "🌼 RAPS (rapeseed) — Rust Autodesk Platform Services CLI"
@@ -61,26 +61,26 @@ jobs:
 
             on_macos do
               if Hardware::CPU.intel?
-                url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-macos-x64.tar.gz"
+                url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-cli-x86_64-apple-darwin.tar.xz"
                 sha256 "${{ steps.checksums.outputs.macos_x64 }}"
               else
-                url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-macos-arm64.tar.gz"
+                url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-cli-aarch64-apple-darwin.tar.xz"
                 sha256 "${{ steps.checksums.outputs.macos_arm64 }}"
               end
             end
 
             on_linux do
               if Hardware::CPU.intel?
-                url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-linux-x64.tar.gz"
+                url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-cli-x86_64-unknown-linux-gnu.tar.xz"
                 sha256 "${{ steps.checksums.outputs.linux_x64 }}"
               else
-                url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-linux-arm64.tar.gz"
+                url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-cli-aarch64-unknown-linux-gnu.tar.xz"
                 sha256 "${{ steps.checksums.outputs.linux_arm64 }}"
               end
             end
 
             def install
-              bin.install "raps"
+              bin.install "raps-cli" => "raps"
             end
 
             test do
@@ -107,4 +107,3 @@ jobs:
           echo "- **macOS arm64:** \`${{ steps.checksums.outputs.macos_arm64 }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Linux x64:** \`${{ steps.checksums.outputs.linux_x64 }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Linux arm64:** \`${{ steps.checksums.outputs.linux_arm64 }}\`" >> $GITHUB_STEP_SUMMARY
-
