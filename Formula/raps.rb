@@ -1,26 +1,26 @@
 class Raps < Formula
   desc "🌼 RAPS (rapeseed) — Rust Autodesk Platform Services CLI"
   homepage "https://rapscli.xyz"
-  version "4.2.1"
+  version "4.2.2"
   license "Apache-2.0"
 
   on_macos do
     if Hardware::CPU.intel?
       url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-cli-x86_64-apple-darwin.tar.xz"
-      sha256 "f967f61655d4d3ed3bf959b858db9034e7b2c48c24feaf0352d197c65a19d043"
+      sha256 "25a9891af9cfcdff073a601c605aea55f564fbe33d1f7fa1591899a5c31c0b05"
     else
       url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-cli-aarch64-apple-darwin.tar.xz"
-      sha256 "927ec4125b8382fc43ca41b7182c98b5ef876783b3883d5bb410b854479c7f77"
+      sha256 "e2c35c37754c979b5b932175a35e5b71d76363a66f71e360425d3ccbe36b1ce2"
     end
   end
 
   on_linux do
     if Hardware::CPU.intel?
       url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-cli-x86_64-unknown-linux-gnu.tar.xz"
-      sha256 "ba4e1947dbeb6506fee3722a681224a1a1d50199da079566f29a02a964990439"
+      sha256 "ad976572a66c0c8a3a0a9c16215d2398794c49bbbc5b133117b5b8ef324cf00b"
     else
       url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-cli-aarch64-unknown-linux-gnu.tar.xz"
-      sha256 "8b05f2acef4047f35881cc79b8c0403afef8f1b13582d577a3f31047ff82ac7e"
+      sha256 "28ff8763a2504647bf4c2d5f850a25b16726052aa67ffdeddeeaadeac6a96573"
     end
   end
 
