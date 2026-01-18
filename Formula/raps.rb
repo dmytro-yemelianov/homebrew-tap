@@ -7,20 +7,20 @@ class Raps < Formula
   on_macos do
     if Hardware::CPU.intel?
       url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-cli-x86_64-apple-darwin.tar.xz"
-      sha256 "5d2253b3ce4fcf5e87d1409b8dc4bcb712e424253ec1ca466bbedda8627ce390"
+      sha256 "57bccd581af236fd2b198d37183eac4a317f9e85c4a5a39329886edcf22710d9"
     else
       url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-cli-aarch64-apple-darwin.tar.xz"
-      sha256 "a3ee9086dddb0ea0414868af503a980746f955b4c182d746d0a79636320bca6b"
+      sha256 "1ff0cc999219518b399eb08d2f8f13c59da91a33dd20d195cd69e7b6d56ab1b5"
     end
   end
 
   on_linux do
     if Hardware::CPU.intel?
       url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-cli-x86_64-unknown-linux-gnu.tar.xz"
-      sha256 "7910e3c274986df1f6553c40b3ff6ab8233181def09b54d359470ae236c947dd"
+      sha256 "e82cf9eb3c549bfc17a19140fe3d1846b9dca54f35680e659f9739752d97d2dd"
     else
       url "https://github.com/dmytro-yemelianov/raps/releases/download/v#{version}/raps-cli-aarch64-unknown-linux-gnu.tar.xz"
-      sha256 "10cf16383940a9e8f5c0f880856ce94170aba80a29219e9c1dd5586a416f7a0c"
+      sha256 "3ef6a2aa48e652b23082ec5e93fa3b318ba2ab07168a8e6742d1fdf4d99747b4"
     end
   end
 
