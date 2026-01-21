@@ -25,7 +25,9 @@ class Raps < Formula
   end
 
   def install
-    bin.install "raps-cli" => "raps"
+    # cargo-dist extracts to a subdirectory, find the binary
+    binary = Dir["raps-cli-*/raps"].first || Dir["*/raps"].first || "raps"
+    bin.install binary => "raps"
   end
 
   test do
