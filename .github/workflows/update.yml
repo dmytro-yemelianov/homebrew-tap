@@ -107,3 +107,41 @@ jobs:
           echo "- **macOS arm64:** \`${{ steps.checksums.outputs.macos_arm64 }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Linux x64:** \`${{ steps.checksums.outputs.linux_x64 }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Linux arm64:** \`${{ steps.checksums.outputs.linux_arm64 }}\`" >> $GITHUB_STEP_SUMMARY
+
+  # Test Homebrew installation after formula update
+  test-homebrew:
+    name: Test Homebrew Installation (${{ matrix.os }})
+    needs: update
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    steps:
+      - name: Install Homebrew (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
+
+      - name: Add tap and install raps
+        run: |
+          brew tap dmytro-yemelianov/tap
+          brew install raps
+
+      - name: Verify installation
+        run: |
+          echo "🧪 Testing raps --version..."
+          raps --version
+
+          echo "🧪 Testing raps --help..."
+          raps --help
+
+          echo "✅ Homebrew installation test passed on ${{ matrix.os }}"
+
+      - name: Test upgrade path
+        run: |
+          echo "🔄 Testing brew upgrade..."
+          brew upgrade raps || echo "Already at latest version"
+          raps --version
+          echo "✅ Upgrade test passed"
