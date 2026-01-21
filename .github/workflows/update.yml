@@ -90,13 +90,22 @@ jobs:
           EOF
 
       - name: Commit and push
+        id: commit
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add Formula/raps.rb
-          git commit -m "Update to v${VERSION}"
-          git push
+
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit - already at v${VERSION}"
+            echo "updated=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "Update to v${VERSION}"
+            git push
+            echo "updated=true" >> $GITHUB_OUTPUT
+          fi
 
       - name: Summary
         run: |
