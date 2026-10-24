@@ -1,8 +1,8 @@
 class GlobeSwitch < Formula
   desc "Tap the Globe key to switch keyboard layouts on macOS instantly"
   homepage "https://github.com/dmytro-yemelianov/globe-switch"
-  url "https://github.com/dmytro-yemelianov/globe-switch/archive/refs/tags/v0.4.0.tar.gz"
-  sha256 "c3fce3fce053a5fe3488e8d9b74cf7e7c310ba907cefd666b9c18bc9f038e8d1"
+  url "https://github.com/dmytro-yemelianov/globe-switch/archive/refs/tags/v0.5.0.tar.gz"
+  sha256 "087f6fc2a01b1df2cbda35de4a37fb6c2e98883856327371a6b12f9774649234"
   license "MIT"
   head "https://github.com/dmytro-yemelianov/globe-switch.git", branch: "main"
 
